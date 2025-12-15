@@ -1,0 +1,254 @@
+{
+  "species": [
+    {
+      "id": "oak",
+      "commonName": "English Oak",
+      "scientificName": "Quercus robur",
+      "family": "Fagaceae",
+      "growthFactorCmPerYear": 1.8,
+      "maxAge": 1000,
+      "barkDescription": "Deep vertical fissures, grey-brown, very rough",
+      "voice": {
+        "scale": "dorian",
+        "baseOctave": 3,
+        "instrumentBank": "cello_brass",
+        "attack": 0.1,
+        "decay": 0.3,
+        "sustain": 0.7,
+        "release": 0.5,
+        "filterCutoff": 2000,
+        "reverbMix": 0.4
+      },
+      "funFacts": [
+        "Can live over 1000 years",
+        "Supports over 2000 species of wildlife",
+        "Was sacred to Druids"
+      ]
+    },
+    {
+      "id": "silverBirch",
+      "commonName": "Silver Birch",
+      "scientificName": "Betula pendula",
+      "family": "Betulaceae",
+      "growthFactorCmPerYear": 2.5,
+      "maxAge": 100,
+      "barkDescription": "Distinctive white, papery bark with black diamonds",
+      "voice": {
+        "scale": "majorPentatonic",
+        "baseOctave": 5,
+        "instrumentBank": "flute_bells",
+        "attack": 0.02,
+        "decay": 0.2,
+        "sustain": 0.5,
+        "release": 0.3,
+        "filterCutoff": 8000,
+        "reverbMix": 0.3
+      },
+      "funFacts": [
+        "Pioneer species that colonizes open ground",
+        "Bark was traditionally used to make canoes",
+        "Symbol of renewal and purification"
+      ]
+    },
+    {
+      "id": "yew",
+      "commonName": "English Yew",
+      "scientificName": "Taxus baccata",
+      "family": "Taxaceae",
+      "growthFactorCmPerYear": 0.8,
+      "maxAge": 2000,
+      "barkDescription": "Red-brown, thin, flaking in strips",
+      "voice": {
+        "scale": "locrian",
+        "baseOctave": 2,
+        "instrumentBank": "organ_pad",
+        "attack": 0.5,
+        "decay": 1.0,
+        "sustain": 0.8,
+        "release": 2.0,
+        "filterCutoff": 800,
+        "reverbMix": 0.7
+      },
+      "funFacts": [
+        "Can live over 2000 years",
+        "Associated with churchyards since pre-Christian times",
+        "All parts are highly toxic except the flesh of berries"
+      ]
+    },
+    {
+      "id": "beech",
+      "commonName": "European Beech",
+      "scientificName": "Fagus sylvatica",
+      "family": "Fagaceae",
+      "growthFactorCmPerYear": 2.0,
+      "maxAge": 400,
+      "barkDescription": "Smooth, grey, thin bark often with horizontal markings",
+      "voice": {
+        "scale": "major",
+        "baseOctave": 4,
+        "instrumentBank": "strings_soft",
+        "attack": 0.08,
+        "decay": 0.25,
+        "sustain": 0.6,
+        "release": 0.4,
+        "filterCutoff": 4000,
+        "reverbMix": 0.35
+      },
+      "funFacts": [
+        "Known as the 'Mother of the Forest'",
+        "Beech nuts were once used as pig feed",
+        "The word 'book' derives from 'beech' in several languages"
+      ]
+    },
+    {
+      "id": "scotsPine",
+      "commonName": "Scots Pine",
+      "scientificName": "Pinus sylvestris",
+      "family": "Pinaceae",
+      "growthFactorCmPerYear": 2.0,
+      "maxAge": 500,
+      "barkDescription": "Orange-red upper trunk, grey-brown plates below",
+      "voice": {
+        "scale": "minor",
+        "baseOctave": 3,
+        "instrumentBank": "brass_woodwind",
+        "attack": 0.12,
+        "decay": 0.35,
+        "sustain": 0.6,
+        "release": 0.6,
+        "filterCutoff": 2500,
+        "reverbMix": 0.5
+      },
+      "funFacts": [
+        "The only truly native pine to the UK",
+        "Was sacred to the Picts",
+        "Forms the backbone of the ancient Caledonian Forest"
+      ]
+    },
+    {
+      "id": "ash",
+      "commonName": "Common Ash",
+      "scientificName": "Fraxinus excelsior",
+      "family": "Oleaceae",
+      "growthFactorCmPerYear": 2.5,
+      "maxAge": 400,
+      "barkDescription": "Pale grey with regular diamond-shaped fissures",
+      "voice": {
+        "scale": "mixolydian",
+        "baseOctave": 3,
+        "instrumentBank": "acoustic_guitar",
+        "attack": 0.04,
+        "decay": 0.15,
+        "sustain": 0.65,
+        "release": 0.25,
+        "filterCutoff": 3500,
+        "reverbMix": 0.3
+      },
+      "funFacts": [
+        "In Norse mythology, Yggdrasil was an ash tree",
+        "Ash wood is prized for tool handles due to its strength",
+        "Currently threatened by ash dieback disease"
+      ]
+    },
+    {
+      "id": "willow",
+      "commonName": "Weeping Willow",
+      "scientificName": "Salix babylonica",
+      "family": "Salicaceae",
+      "growthFactorCmPerYear": 3.5,
+      "maxAge": 80,
+      "barkDescription": "Grey-brown, deeply fissured with intersecting ridges",
+      "voice": {
+        "scale": "minorPentatonic",
+        "baseOctave": 4,
+        "instrumentBank": "harp_bells",
+        "attack": 0.15,
+        "decay": 0.4,
+        "sustain": 0.55,
+        "release": 0.8,
+        "filterCutoff": 3000,
+        "reverbMix": 0.55
+      },
+      "funFacts": [
+        "The source of salicylic acid, precursor to aspirin",
+        "Can grow up to 3 meters per year",
+        "Associated with grief and mourning in many cultures"
+      ]
+    },
+    {
+      "id": "sweetChestnut",
+      "commonName": "Sweet Chestnut",
+      "scientificName": "Castanea sativa",
+      "family": "Fagaceae",
+      "growthFactorCmPerYear": 2.0,
+      "maxAge": 700,
+      "barkDescription": "Develops deep spiral fissures with age",
+      "voice": {
+        "scale": "lydian",
+        "baseOctave": 3,
+        "instrumentBank": "warm_strings",
+        "attack": 0.08,
+        "decay": 0.28,
+        "sustain": 0.68,
+        "release": 0.45,
+        "filterCutoff": 2800,
+        "reverbMix": 0.42
+      },
+      "funFacts": [
+        "The distinctive spiral bark can take 200+ years to develop",
+        "Introduced to Britain by the Romans",
+        "Chestnuts were a staple food before potatoes arrived"
+      ]
+    },
+    {
+      "id": "douglasFir",
+      "commonName": "Douglas Fir",
+      "scientificName": "Pseudotsuga menziesii",
+      "family": "Pinaceae",
+      "growthFactorCmPerYear": 2.8,
+      "maxAge": 500,
+      "barkDescription": "Thick, corky, deeply furrowed with dark brown ridges",
+      "voice": {
+        "scale": "dorian",
+        "baseOctave": 2,
+        "instrumentBank": "deep_strings",
+        "attack": 0.15,
+        "decay": 0.4,
+        "sustain": 0.75,
+        "release": 0.7,
+        "filterCutoff": 1800,
+        "reverbMix": 0.6
+      },
+      "funFacts": [
+        "Can grow over 100 meters tall in native range",
+        "Named after Scottish botanist David Douglas",
+        "Not actually a true fir - belongs to its own genus"
+      ]
+    },
+    {
+      "id": "rowan",
+      "commonName": "Rowan",
+      "scientificName": "Sorbus aucuparia",
+      "family": "Rosaceae",
+      "growthFactorCmPerYear": 2.0,
+      "maxAge": 200,
+      "barkDescription": "Smooth, shiny, grey-brown",
+      "voice": {
+        "scale": "phrygian",
+        "baseOctave": 4,
+        "instrumentBank": "celtic_harp",
+        "attack": 0.07,
+        "decay": 0.24,
+        "sustain": 0.58,
+        "release": 0.4,
+        "filterCutoff": 3800,
+        "reverbMix": 0.45
+      },
+      "funFacts": [
+        "Also known as the Mountain Ash",
+        "Believed to protect against witchcraft in Celtic folklore",
+        "Its berries are an important food source for birds"
+      ]
+    }
+  ]
+}
