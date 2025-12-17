@@ -1,6 +1,6 @@
 import SwiftUI
 import Combine
-import AVFoundation
+import ARKit
 import CoreLocation
 
 /// View model coordinating the bark scanning and music generation process
@@ -16,11 +16,11 @@ final class ScannerViewModel: ObservableObject {
     @Published var tempo: Double = 80
     @Published var isRecording = false
     @Published var recordingDuration: TimeInterval = 0
+    @Published var isLiDARActive = false
 
     // MARK: - Services
 
-    let cameraService = CameraService()
-    let lidarService = LiDARService()
+    let arCameraService = ARCameraService()
     let locationService = LocationService()
 
     private let barkAnalyzer = BarkAnalyzer()
@@ -49,29 +49,23 @@ final class ScannerViewModel: ObservableObject {
     func startScanning() async {
         state = .initializing
 
-        // Check if we're in simulator (no camera)
+        // Check if we're in simulator (no camera/AR)
         #if targetEnvironment(simulator)
         state = .error(.cameraUnavailable)
-        // Early return for simulator - don't try camera/audio
+        // Early return for simulator
         #else
-        // Configure camera
+        // Configure AR camera
         do {
-            try await cameraService.configure()
+            try await arCameraService.configure()
         } catch {
-            print("Camera configuration failed: \(error)")
+            print("AR Camera configuration failed: \(error)")
             state = .error(.cameraUnavailable)
             return
         }
 
-        // Start camera
-        cameraService.start()
-
-        // NOTE: LiDAR is disabled because ARKit and AVCaptureSession
-        // cannot share the camera simultaneously. To use LiDAR, would need
-        // to switch to using ARSession's camera feed instead of AVCaptureSession.
-        // if lidarService.isAvailable {
-        //     lidarService.start()
-        // }
+        // Start AR session (includes LiDAR if available)
+        arCameraService.start()
+        isLiDARActive = arCameraService.isLiDARAvailable
 
         // Request location (non-fatal)
         locationService.requestPermission()
@@ -92,14 +86,13 @@ final class ScannerViewModel: ObservableObject {
 
     func stopScanning() {
         stopAnalysis()
-        cameraService.stop()
-        lidarService.stop()
+        arCameraService.stop()
         audioEngine.stop()
         state = .initializing
     }
 
     func identifyTree() {
-        guard let pixelBuffer = cameraService.currentPixelBuffer else { return }
+        guard let pixelBuffer = arCameraService.currentPixelBuffer else { return }
 
         state = .identifying
 
@@ -173,7 +166,7 @@ final class ScannerViewModel: ObservableObject {
         )
 
         // Capture bark image
-        if let pixelBuffer = cameraService.currentPixelBuffer {
+        if let pixelBuffer = arCameraService.currentPixelBuffer {
             scan.barkImageData = imageDataFromPixelBuffer(pixelBuffer)
         }
 
@@ -183,8 +176,8 @@ final class ScannerViewModel: ObservableObject {
     // MARK: - Private Methods
 
     private func setupBindings() {
-        // Listen for LiDAR measurements
-        lidarService.$measuredDiameter
+        // Listen for LiDAR diameter measurements from AR camera service
+        arCameraService.$measuredDiameter
             .compactMap { $0 }
             .sink { [weak self] diameter in
                 self?.dbhMeasurements.append(diameter)
@@ -192,6 +185,16 @@ final class ScannerViewModel: ObservableObject {
                 if self?.dbhMeasurements.count ?? 0 > 10 {
                     self?.dbhMeasurements.removeFirst()
                 }
+            }
+            .store(in: &cancellables)
+
+        // Listen for camera frames from AR session
+        // Use throttle to prevent overwhelming the system
+        arCameraService.$currentPixelBuffer
+            .compactMap { $0 }
+            .throttle(for: .milliseconds(66), scheduler: DispatchQueue.main, latest: true)  // ~15 fps max
+            .sink { [weak self] pixelBuffer in
+                self?.processFrame(pixelBuffer)
             }
             .store(in: &cancellables)
 
@@ -205,15 +208,11 @@ final class ScannerViewModel: ObservableObject {
     }
 
     private func startAnalysis() {
-        cameraService.frameHandler = { [weak self] pixelBuffer in
-            Task { @MainActor in
-                self?.processFrame(pixelBuffer)
-            }
-        }
+        // Analysis is now handled via Combine bindings in setupBindings()
+        // The arCameraService.$currentPixelBuffer subscription handles frame processing
     }
 
     private func stopAnalysis() {
-        cameraService.frameHandler = nil
         classificationTask?.cancel()
         analysisTimer?.invalidate()
         recordingTimer?.invalidate()

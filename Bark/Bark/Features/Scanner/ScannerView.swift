@@ -1,6 +1,7 @@
 import SwiftUI
 import SwiftData
-import AVFoundation
+import ARKit
+import SceneKit
 
 /// Main camera and scanning view
 struct ScannerView: View {
@@ -13,9 +14,9 @@ struct ScannerView: View {
             // Black background
             Color.black.ignoresSafeArea()
 
-            // Camera preview - only show when camera is configured
+            // AR Camera preview - only show when camera is configured
             if cameraReady {
-                CameraPreviewView(cameraService: viewModel.cameraService)
+                ARCameraPreviewView(session: viewModel.arCameraService.session)
                     .ignoresSafeArea()
             }
 
@@ -24,6 +25,12 @@ struct ScannerView: View {
 
             // UI overlay
             VStack {
+                // LiDAR indicator at top
+                if viewModel.isLiDARActive {
+                    LiDARIndicator(diameter: viewModel.arCameraService.measuredDiameter)
+                        .padding(.top, 60)
+                }
+
                 Spacer()
 
                 // Tree info card (when identified)
@@ -70,36 +77,54 @@ struct ScannerView: View {
     }
 }
 
-// MARK: - Camera Preview
+// MARK: - AR Camera Preview
 
-struct CameraPreviewView: UIViewRepresentable {
-    let cameraService: CameraService
+struct ARCameraPreviewView: UIViewRepresentable {
+    let session: ARSession
 
-    func makeUIView(context: Context) -> UIView {
-        let view = UIView(frame: .zero)
-        view.backgroundColor = .black
+    func makeUIView(context: Context) -> ARSCNView {
+        let arView = ARSCNView(frame: .zero)
+        arView.session = session
+        arView.automaticallyUpdatesLighting = true
 
-        let previewLayer = AVCaptureVideoPreviewLayer(session: cameraService.captureSession)
-        previewLayer.videoGravity = .resizeAspectFill
-        view.layer.addSublayer(previewLayer)
+        // Disable scene rendering - we just want the camera feed
+        arView.scene = SCNScene()
+        arView.rendersContinuously = true
 
-        context.coordinator.previewLayer = previewLayer
-
-        return view
+        return arView
     }
 
-    func updateUIView(_ uiView: UIView, context: Context) {
-        DispatchQueue.main.async {
-            context.coordinator.previewLayer?.frame = uiView.bounds
+    func updateUIView(_ uiView: ARSCNView, context: Context) {
+        // Session is already connected
+    }
+}
+
+// MARK: - LiDAR Indicator
+
+struct LiDARIndicator: View {
+    let diameter: Double?
+
+    var body: some View {
+        HStack(spacing: 8) {
+            // LiDAR icon with pulse animation
+            Image(systemName: "sensor.tag.radiowaves.forward.fill")
+                .foregroundStyle(.cyan)
+                .symbolEffect(.pulse)
+
+            Text("LiDAR")
+                .font(.caption.bold())
+
+            if let diameter = diameter {
+                Text("·")
+                    .foregroundStyle(.secondary)
+                Text(String(format: "%.0f cm", diameter))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
         }
-    }
-
-    func makeCoordinator() -> Coordinator {
-        Coordinator()
-    }
-
-    class Coordinator {
-        var previewLayer: AVCaptureVideoPreviewLayer?
+        .padding(.horizontal, 12)
+        .padding(.vertical, 6)
+        .background(.ultraThinMaterial, in: Capsule())
     }
 }
 
@@ -264,8 +289,8 @@ struct ControlBar: View {
     let onSave: () -> Void
 
     var body: some View {
-        HStack(spacing: 30) {
-            // Save button
+        HStack(spacing: 20) {
+            // Save button - fixed width for centering
             Button(action: onSave) {
                 VStack {
                     Image(systemName: "square.and.arrow.down")
@@ -273,6 +298,7 @@ struct ControlBar: View {
                     Text("Save")
                         .font(.caption)
                 }
+                .frame(width: 60)
             }
             .disabled(state != .scanning && state != .identified(TreeProfile(species: .oak, ageRange: AgeRange(min: 0, max: 0))))
             .opacity(canSave ? 1 : 0.5)
@@ -296,7 +322,7 @@ struct ControlBar: View {
                 }
             }
 
-            // Record button
+            // Record button - fixed width for centering
             Button(action: onRecord) {
                 VStack {
                     Image(systemName: isRecording ? "stop.fill" : "record.circle")
@@ -305,6 +331,7 @@ struct ControlBar: View {
                     Text(isRecording ? formatDuration(recordingDuration) : "Record")
                         .font(.caption)
                 }
+                .frame(width: 60)
             }
             .disabled(!state.isActive)
             .opacity(state.isActive ? 1 : 0.5)
